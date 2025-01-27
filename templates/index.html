@@ -35,6 +35,17 @@ body {
       <p><input type="submit" value="Submit"></p>
     </form>
     <hr>
+    <br>
+    {% if origFile %}
+    Orig File :  <a href="{{ url_for('upload', requestid=requestid, filename=origFile) }}">{{origFile}}</a>
+
+    <br>
+    Please note that file parts and original file will be deleted in 15 min.
+    <br>
+    File Parts :
+
+    {% endif %}
+
     {% for file in files %}
       <br>
       <!--<a href="{{ url_for('upload', requestid=requestid, filename=file) }}"><img src="{{ url_for('upload', requestid=requestid, filename=file) }}" style="width: 64px"></a>-->

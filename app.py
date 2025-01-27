@@ -33,17 +33,18 @@ def upload_files():
         os.makedirs(os.path.join(app.config['UPLOAD_PATH'],requestid),exist_ok=True)
         uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'],requestid, filename))
         pdfutil.splitPdfs(os.path.join(app.config['UPLOAD_PATH'],requestid, filename),parts=parts,pdfpath=os.path.join(app.config['UPLOAD_PATH'],requestid))
-    return redirect(url_for('showResults',requestid=requestid))
+    return redirect(url_for('showResults',requestid=requestid,filename=filename))
 
 
-@app.route('/<requestid>')
-def showResults(requestid):
+@app.route('/<requestid>/<filename>')
+def showResults(requestid,filename):
     files = []
     try:
         files = os.listdir(os.path.join(app.config['UPLOAD_PATH'],requestid))
+        fileparts = [ f for f in files if f != filename ]
     except Exception as e:
         pass
-    return render_template('index.html', files=files,requestid=requestid)
+    return render_template('index.html', origFile=filename,files=fileparts,requestid=requestid)
 
 @app.route('/uploads/<requestid>/<filename>')
 def upload(requestid,filename):
