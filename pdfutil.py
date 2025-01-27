@@ -44,4 +44,4 @@ def splitPdfs(pdfName : str, parts : int = -1,pdfpath :str = '.'):
    
 
 
-splitPdfs("fileBIG2.pdf",2)
+#splitPdfs("fileBIG2.pdf",2)
