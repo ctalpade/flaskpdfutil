@@ -2,9 +2,30 @@
 <html>
   <head>
     <title>File Upload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  padding: 25px;
+  background-color: white;
+  color: black;
+  font-size: 25px;
+}
+
+.dark-mode {
+  background-color: black;
+  color: white;
+}
+</style>
+<script>
+  function myFunction() {
+     var element = document.body;
+     element.classList.toggle("dark-mode");
+  }
+  </script>
+  
   </head>
   <body>
-    <h1>PDF Utility. File Upload</h1>
+    <h1>PDF Utility. Upload PDF file to split</h1>
     <form method="POST" action="/" enctype="multipart/form-data">
       <input type="hidden" value="{{requestid}}" name="requestid"/>
       <p><input type="file" name="file"></p>
@@ -19,5 +40,7 @@
       <!--<a href="{{ url_for('upload', requestid=requestid, filename=file) }}"><img src="{{ url_for('upload', requestid=requestid, filename=file) }}" style="width: 64px"></a>-->
       <a href="{{ url_for('upload', requestid=requestid, filename=file) }}">{{file}}</a>
     {% endfor %}
+    <button onclick="myFunction()">Dark/Light</button>
   </body>
+
 </html>
