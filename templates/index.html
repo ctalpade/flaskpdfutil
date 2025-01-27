@@ -24,7 +24,7 @@ body {
   </script>
   
   </head>
-  <body>
+  <body class="dark-mode">
     <h1>PDF Utility. Upload PDF file to split</h1>
     <form method="POST" action="/" enctype="multipart/form-data">
       <input type="hidden" value="{{requestid}}" name="requestid"/>
@@ -40,6 +40,7 @@ body {
       <!--<a href="{{ url_for('upload', requestid=requestid, filename=file) }}"><img src="{{ url_for('upload', requestid=requestid, filename=file) }}" style="width: 64px"></a>-->
       <a href="{{ url_for('upload', requestid=requestid, filename=file) }}">{{file}}</a>
     {% endfor %}
+    <br>
     <button onclick="myFunction()">Dark/Light</button>
   </body>
 
