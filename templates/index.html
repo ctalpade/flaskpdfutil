@@ -15,6 +15,7 @@
     </form>
     <hr>
     {% for file in files %}
+      <br>
       <!--<a href="{{ url_for('upload', requestid=requestid, filename=file) }}"><img src="{{ url_for('upload', requestid=requestid, filename=file) }}" style="width: 64px"></a>-->
       <a href="{{ url_for('upload', requestid=requestid, filename=file) }}">{{file}}</a>
     {% endfor %}
