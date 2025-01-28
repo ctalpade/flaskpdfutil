@@ -10,6 +10,7 @@ app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 * 1024
 app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif','.pdf']
 app.config['UPLOAD_PATH'] = 'uploads'
 
+DELETE_AFTER=10
     
 @app.route('/stopBgThread/stop')
 def stopBgThread():
@@ -69,7 +70,7 @@ def deleteOldFiles(timer_runs):
                 min_passed = round(delta.total_seconds() / 60)
                 print('file_path '+str(file_path)+' mod ts '+str(timestamp_of_file_modified)+' mod date '+str(modification_date)+' delta '+str(delta)+' min_passed '+str(min_passed)) 
                 
-                if min_passed > 15: 
+                if min_passed > DELETE_AFTER: 
                     # remove file  
                     os.remove(file_path) 
                     print(f" Delete : {f}")

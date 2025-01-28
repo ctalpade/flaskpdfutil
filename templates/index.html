@@ -25,7 +25,10 @@ body {
   
   </head>
   <body class="dark-mode">
+    {% if not origFile %}
+
     <h1>PDF Utility. Upload PDF file to split</h1>
+
     <form method="POST" action="/" enctype="multipart/form-data">
       <input type="hidden" value="{{requestid}}" name="requestid"/>
       <p><input type="file" name="file"></p>
@@ -35,8 +38,11 @@ body {
       <p><input type="submit" value="Submit"></p>
     </form>
     <hr>
+    {% endif %}
     <br>
     {% if origFile %}
+    <h1>PDF Utility Response. Back to <a href="history.back()">Home</a> !!</h1>
+    <h4>You will loose the current response if you move to different page.</h4>
     Orig File :  <a href="{{ url_for('upload', requestid=requestid, filename=origFile) }}">{{origFile}}</a>
 
     <br>
