@@ -114,7 +114,7 @@ def scheduleDelFiles():
 timer_runs = threading.Event()
 timer_runs.set()
 
-#scheduleDelFiles()
+scheduleDelFiles()
 
 print('All app code inited')
 
