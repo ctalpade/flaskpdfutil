@@ -45,4 +45,27 @@ def splitPdfs(pdfName : str, parts : int = -1,pdfpath :str = '.'):
         output.close()
     
 
-#splitPdfs("ira-school-info.pdf",2)
+def mergePdfs(pdfpath :str = '.'):
+    files = []
+    try:
+        files = os.listdir(os.path.join(pdfpath))
+        files.sort()
+    except Exception as e:
+        pass
+
+    merger = PdfWriter()
+    output = open(os.path.join(pdfpath,'merged-doc.pdf'), "ab")
+    
+    for file in files:
+        input = open(os.path.join(pdfpath,file),"rb")
+        reader = PdfReader(os.path.join(pdfpath,file))
+        merger.append(fileobj=input,pages=(0,len(reader.pages)))
+        merger.write(output)
+
+    merger.close()
+    reader.close()
+    output.close()
+
+
+#splitPdfs(os.path.join('uploads','french-fsl18-2013curr.pdf'),2,os.path.join('uploads'))
+#mergePdfs(os.path.join('uploads'))

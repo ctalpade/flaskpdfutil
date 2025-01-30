@@ -25,27 +25,54 @@ def index():
 @app.route('/', methods=['POST'])
 def upload_files():
     requestid = request.form.get('requestid')
-    parts = int(request.form.get('parts'))
+    parts = request.form.get('parts','0')
+    if not parts or parts == '':
+        parts = 0 
+    else:
+        parts = int(parts)
+    pdf_operation = request.form.get('pdf_operation')
+    uploaded_files = request.files.getlist('file')
+    if uploaded_files:
+        if pdf_operation == 'split':
+            print('file uploaded '+str(uploaded_files[0]))
+            print('files for splitting '+str(uploaded_files[0].filename))
+        elif pdf_operation == 'merge':
+            print('file uploaded '+str(uploaded_files))
+            for file in uploaded_files:
+                print('files for merging '+str(file.filename))
+    else:
+        return 'No Files Uploaded'
+
+    
     if not requestid:
         requestid = datetime.datetime.now().strftime('%d%m%Y%H%M%S%f')
-    uploaded_file = request.files['file']
-    filename = secure_filename(uploaded_file.filename)
-    if filename != '':
-        os.makedirs(os.path.join(app.config['UPLOAD_PATH'],requestid),exist_ok=True)
-        uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'],requestid, filename))
+    #uploaded_file = request.files['file']
+    for file in uploaded_files:
+        filename = secure_filename(file.filename)
+        if filename != '':
+            os.makedirs(os.path.join(app.config['UPLOAD_PATH'],requestid),exist_ok=True)
+            file.save(os.path.join(app.config['UPLOAD_PATH'],requestid, filename))
+
+    if pdf_operation == 'split':
         pdfutil.splitPdfs(os.path.join(app.config['UPLOAD_PATH'],requestid, filename),parts=parts,pdfpath=os.path.join(app.config['UPLOAD_PATH'],requestid))
-    return redirect(url_for('showResults',requestid=requestid,filename=filename))
+    else:
+        pdfutil.mergePdfs(os.path.join(app.config['UPLOAD_PATH'],requestid))
+    if pdf_operation == 'split':
+        return redirect(url_for('showResults',pdf_operation=pdf_operation,requestid=requestid,filename=filename))
+    else:
+        return redirect(url_for('showResults',pdf_operation=pdf_operation,requestid=requestid,filename='merged-doc.pdf'))
 
 
-@app.route('/<requestid>/<filename>')
-def showResults(requestid,filename):
+
+@app.route('/<requestid>/<pdf_operation>/<filename>')
+def showResults(requestid,pdf_operation,filename):
     files = []
     try:
         files = os.listdir(os.path.join(app.config['UPLOAD_PATH'],requestid))
         fileparts = [ f for f in files if f != filename ]
     except Exception as e:
         pass
-    return render_template('index.html', origFile=filename,files=fileparts,requestid=requestid)
+    return render_template('index.html', pdf_operation=pdf_operation,origFile=filename,files=fileparts,requestid=requestid)
 
 @app.route('/uploads/<requestid>/<filename>')
 def upload(requestid,filename):
@@ -87,7 +114,7 @@ def scheduleDelFiles():
 timer_runs = threading.Event()
 timer_runs.set()
 
-scheduleDelFiles()
+#scheduleDelFiles()
 
 print('All app code inited')
 

@@ -27,11 +27,15 @@ body {
   <body class="dark-mode">
     {% if not origFile %}
 
-    <h1>PDF Utility. Upload PDF file to split</h1>
+    <h1>PDF Utility. Upload PDF file to split or merge</h1>
 
     <form method="POST" action="/" enctype="multipart/form-data">
       <input type="hidden" value="{{requestid}}" name="requestid"/>
-      <p><input type="file" name="file"></p>
+      <input type="radio" id="split" name="pdf_operation" value="split">
+      <label for="html">Split</label><br>
+      <input type="radio" id="merge" name="pdf_operation" value="merge">
+      <label for="css">Merge</label><br>
+      <p><input type="file" name="file" multiple></p>
       <br>
       <p>Parts to split : <input type="text" name="parts"></p>
       <br>
@@ -43,20 +47,46 @@ body {
     {% if origFile %}
     <h1>PDF Utility Response. Back to <a href="javascript:history.back()">Home</a> !!</h1>
     <h4>You will loose the current response if you move to different page.</h4>
-    Orig File :  <a href="{{ url_for('upload', requestid=requestid, filename=origFile) }}">{{origFile}}</a>
+    
+    {% if pdf_operation == 'split' %}
+    Orig File :  
+    <a href="{{ url_for('upload', requestid=requestid, filename=origFile) }}">{{origFile}}</a>
+    {% endif %}
 
-    <br>
-    Please note that file parts and original file will be deleted in 15 min.
-    <br>
-    File Parts :
+    {% if pdf_operation == 'merge' %}
+    Orig Files :  
+
+    {% for file in files %}
+      <br>
+      <a href="{{ url_for('upload', requestid=requestid, filename=file) }}">{{file}}</a>
+    {% endfor %}
 
     {% endif %}
+
+    <br>
+    Please note all files uploaded or generated will be deleted in 15 min.
+    <br>
+    {% if pdf_operation == 'split' %}
+
+    File Parts :
 
     {% for file in files %}
       <br>
       <!--<a href="{{ url_for('upload', requestid=requestid, filename=file) }}"><img src="{{ url_for('upload', requestid=requestid, filename=file) }}" style="width: 64px"></a>-->
       <a href="{{ url_for('upload', requestid=requestid, filename=file) }}">{{file}}</a>
     {% endfor %}
+    
+    {% endif %}
+
+    {% if pdf_operation == 'merge' %}
+    Merged File:
+
+    <a href="{{ url_for('upload', requestid=requestid, filename=origFile) }}">{{origFile}}</a>
+
+    {% endif %}
+
+
+    {% endif %}
     <br>
     <button onclick="myFunction()">Dark/Light</button>
     <br>
