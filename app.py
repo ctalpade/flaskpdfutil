@@ -12,9 +12,12 @@ app.config['UPLOAD_PATH'] = 'uploads'
 
 DELETE_AFTER=10
     
+startTimer=True
 @app.route('/stopBgThread/stop')
 def stopBgThread():
-    timer_runs.clear()
+    #timer_runs.clear()
+    global startTimer
+    startTimer=False
     return "Background thread will be stopped by now.."
 
 @app.route('/')
@@ -81,8 +84,10 @@ def upload(requestid,filename):
 import threading
 import time
 
-def deleteOldFiles(timer_runs):
-    while timer_runs.is_set():
+#def deleteOldFiles(timer_runs):
+def deleteOldFiles():
+    #while timer_runs.is_set():
+    while startTimer:
         print('Deleting older files')
         for (root,dirs,files) in os.walk(app.config['UPLOAD_PATH'], topdown=True): 
             for f in files: 
@@ -105,18 +110,18 @@ def deleteOldFiles(timer_runs):
     print('Background thread is now stopped..')
 
 def scheduleDelFiles():
-    t = threading.Thread(target=deleteOldFiles, args=(timer_runs,))
+    t = threading.Thread(target=deleteOldFiles)#, args=(timer_runs,))
     t.start()
     # Wait 10 seconds and then stop the timer.
     #time.sleep(10)
     print("The timer has been started!") 
 
-timer_runs = threading.Event()
-timer_runs.set()
+#timer_runs = threading.Event()
+#timer_runs.set()
 
 scheduleDelFiles()
 
 print('All app code inited')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)
